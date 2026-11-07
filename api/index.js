@@ -7,7 +7,7 @@ const MANIFEST = {
     id: 'dev.akira.bitchord-hires',
     name: 'juanjob hi res',
     version: '1.2.1',
-    description: 'Multi-source lossless addon: Qobuz hi-res, Tidal, Monochrome, Netease, Deezer catalogue, Internet Archive. Automatic failover.',
+    description: 'Multi-source lossless addon: Tidal HiFi, Monochrome, Netease, Deezer catalogue, Internet Archive. Tidal prefers compatible unencrypted Hi-Res FLAC and falls back to CD Lossless.',
     resources: ['search', 'stream'],
     bitchordAuth: true,
     checkValidLossless: 1,
@@ -18,7 +18,7 @@ const MANIFEST = {
             type: 'select',
             default: 'lossless',
             options: [
-                { label: 'Lossless (FLAC, up to 24/192)', value: 'lossless' },
+                { label: 'Best available Lossless (Hi-Res first, CD FLAC fallback)', value: 'lossless' },
                 { label: 'High (FLAC, up to 24/96)', value: 'high' },
                 { label: 'Low (data saver)', value: 'low' },
             ],
