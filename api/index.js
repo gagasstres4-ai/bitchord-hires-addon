@@ -6,7 +6,7 @@ const bitchord = createBitChordAuth({
 });
 const MANIFEST = {
     id: 'dev.akira.bitchord-hires',
-    name: 'juanjob hi res',
+    name: 'Melon Bread Hiress',
     version: '1.2.1',
     description: 'Multi-source lossless addon: Tidal HiFi, Monochrome, Netease, Deezer catalogue, Internet Archive. Tidal prefers compatible unencrypted Hi-Res FLAC and falls back to CD Lossless.',
     resources: ['search', 'stream'],
