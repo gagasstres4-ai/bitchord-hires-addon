@@ -2,7 +2,7 @@ import { searchAll, resolveStream, health } from '../lib/router.js';
 import { getTidalDashManifest } from '../lib/providers/tidal.js';
 import { createBitChordAuth } from '../lib/bitchord-addon-auth.mjs';
 const bitchord = createBitChordAuth({
-    hosts: ['bitchord-hires-addon.de.deplexo.com', 'bitchord-hires-addon.vercel.app'],
+    hosts: ['bitchord-hires-addon.de.deplexo.com', 'bitchord-hires-addon.vercel.app', 'melonbread-hires-addon.vercel.app'],
 });
 const MANIFEST = {
     id: 'dev.akira.bitchord-hires',
@@ -137,6 +137,7 @@ export default async function handler(req, res) {
             const allowedHosts = new Set([
                 'bitchord-hires-addon.de.deplexo.com',
                 'bitchord-hires-addon.vercel.app',
+                'melonbread-hires-addon.vercel.app',
                 'localhost',
                 'localhost:8787',
                 '127.0.0.1',
