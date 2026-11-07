@@ -1,5 +1,15 @@
 # juanjob hi res — BitChord Addon
 
+> **Estado de Qobuz/TIDAL:** esta rama elimina los proxies públicos de terceros
+> que antes se usaban por defecto. Tener una suscripción de consumo no entrega
+> credenciales de API ni garantiza autorización para un reproductor de terceros.
+> Qobuz requiere credenciales de aplicación emitidas por Qobuz; TIDAL requiere
+> una app registrada y OAuth con los permisos/capacidades habilitados. Hasta
+> contar con esas autorizaciones, esos dos providers quedan desactivados por
+> defecto; las demás fuentes continúan disponibles. Ver
+> [la guía de integración legítima](docs/QOBUZ_TIDAL_ACCOUNT_INTEGRATION.md).
+
+
 Addon HTTP para [BitChord](https://github.com/kushagrasinghx/BitChord) con **múltiples fuentes de audio y failover automático**. Reproduce **FLAC real** —hasta **24-bit / 192 kHz** cuando Qobuz está disponible— y si una fuente falla, resuelve la misma grabación en otra.
 
 Sin cuentas, sin login, sin API keys. Todo lo que usa es público.
