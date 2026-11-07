@@ -82,7 +82,7 @@ export default async function handler(req, res) {
     // Tidal FLAC manifests are returned by getTidalDashManifest().
     if (path.startsWith('/dash/')) {
         const trackId = path.slice('/dash/'.length);
-        if (!/^\\d+$/.test(trackId))
+        if (!/^\d+$/.test(trackId))
             return json(res, 404, { error: 'invalid Tidal track id' });
         try {
             const manifest = await getTidalDashManifest(trackId);
