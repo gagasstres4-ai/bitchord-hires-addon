@@ -1,4 +1,5 @@
 import { searchAll, resolveStream, health } from '../lib/router.js';
+import { getTidalDashManifest } from '../lib/providers/tidal.js';
 import { createBitChordAuth } from '../lib/bitchord-addon-auth.mjs';
 const bitchord = createBitChordAuth({
     hosts: ['bitchord-hires-addon.de.deplexo.com', 'bitchord-hires-addon.vercel.app'],
@@ -76,6 +77,27 @@ export default async function handler(req, res) {
     if (path === '/' || path === '/manifest.json') {
         return json(res, 200, MANIFEST);
     }
+    // BitChord's player fetches DASH manifests directly, so this media route
+    // is public like the signed segment URLs it contains. Only unencrypted
+    // Tidal FLAC manifests are returned by getTidalDashManifest().
+    if (path.startsWith('/dash/')) {
+        const trackId = path.slice('/dash/'.length);
+        if (!/^\\d+$/.test(trackId))
+            return json(res, 404, { error: 'invalid Tidal track id' });
+        try {
+            const manifest = await getTidalDashManifest(trackId);
+            if (!manifest)
+                return json(res, 404, { error: 'no compatible unencrypted Hi-Res manifest' });
+            res.writeHead(200, {
+                'Content-Type': 'application/dash+xml; charset=utf-8',
+                'Cache-Control': 'no-store',
+                'Access-Control-Allow-Origin': '*',
+            });
+            return res.end(manifest);
+        } catch (err) {
+            return json(res, 502, { error: String(err?.message || err) });
+        }
+    }
     const auth = await bitchord.verifyRequest(req);
     if (!auth.ok) {
         const rejection = bitchord.rejection(auth);
@@ -109,6 +131,23 @@ export default async function handler(req, res) {
         const stream = await resolveStream(id, url.searchParams.get('quality'));
         if (!stream)
             return json(res, 404, { error: 'not available in this addon' });
+        if (stream.manifest === 'dash' && String(id).startsWith('td:')) {
+            const rawHost = String(req.headers['x-forwarded-host'] || req.headers.host || '')
+                .split(',')[0].trim().toLowerCase();
+            const allowedHosts = new Set([
+                'bitchord-hires-addon.de.deplexo.com',
+                'bitchord-hires-addon.vercel.app',
+                'localhost',
+                'localhost:8787',
+                '127.0.0.1',
+                '127.0.0.1:8787',
+            ]);
+            if (!allowedHosts.has(rawHost))
+                return json(res, 500, { error: 'cannot construct a trusted DASH manifest URL for this host' });
+            const scheme = rawHost.startsWith('localhost') || rawHost.startsWith('127.0.0.1') ? 'http' : 'https';
+            const trackId = String(id).slice(3);
+            stream.url = `${scheme}://${rawHost}/dash/${encodeURIComponent(trackId)}`;
+        }
         return json(res, 200, stream);
     }
     return json(res, 404, { error: 'not found' });
